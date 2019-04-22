@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script
+  src="https://code.jquery.com/jquery-3.4.0.js"
+  integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo="
+  crossorigin="anonymous"></script>
+  <script>
+    var socket = io();
+      $(document).ready(function(){
+          console.log('Jquery has loaded');
+          $('#message').keydown(function(){
+              var msg = this.value;
+              if(event.which === 13){
+                //   console.log('Message ' + msg);
+                socket.emit('msgToServer', msg);
+                $('#messages').val('');
+              }
+          })
+          socket.on('msgAppendToClient',function(data){
+          //  console.log(data);
+          $('.messages').append('User ' + data.id + 'says' + data.message)
+          $('.messages').append('<br>');
+          })
+
+      });
+// code for the voice api
+      var recognition = new webkitSpeechRecognition();
+       recognition.continuous = true;
+       recognition.onresult = function(event) {
+           alert("onresult even handler");
+       }
+       function startButton(event) {
+          recognition.start();
+       }
+  </script>
+    <title>Chat Room</title>
+</head>
+<body>
+    <div class="display-3">Chat Room</div>
+    <button id="start_button" style="color:white" onclick="startButton(event)">
+        start
+      </button>
+    <label for="message" style="color:white">Enter message</label>
+    <input type="text" id="message">
+    <div class="messages"></div>
+</body>
+</html>
